@@ -3,17 +3,17 @@
     <!-- 轮播图 -->
     <mt-swipe :auto="4000">
       <mt-swipe-item v-for="item in lunbotuList" :key="item.id">
-        <img :src="item.img_url" alt="">
+        <img :src="item.img" alt="">
       </mt-swipe-item>
     </mt-swipe>
     
     <!-- 9宫格改造为6宫格 -->
     <ul class="mui-table-view mui-grid-view mui-grid-9">
       <li class="mui-table-view-cell mui-media mui-col-xs-4 mui-col-sm-3">
-        <a href="#">
+        <router-link to="/home/newslist">
           <img src="../../images/menu1.png" alt="">
           <div class="mui-media-body">新闻资讯</div>
-        </a>
+        </router-link>
       </li>
       <li class="mui-table-view-cell mui-media mui-col-xs-4 mui-col-sm-3">
         <a href="#">
@@ -63,7 +63,7 @@ export default {
   },
   methods:{
     getLunBoTu(){
-      this.axios.get('http://www.liulongbin.top:3005/api/getnewslist').then(result => {
+      this.$axios.get('api/getlunbo').then(result => {
         // console.log(result.data);
         if(result.data.status === 0){
           // 成功了
@@ -80,7 +80,7 @@ export default {
 
 <style lang="less" scoped>
   .mint-swipe {
-    height:200px;
+    height:170px;
 
     .mint-swipe-item {
       &:nth-of-type(1) {

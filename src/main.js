@@ -8,10 +8,11 @@ import VueRouter from 'vue-router'
 Vue.use(VueRouter)
 
 // 按需导入 mint-ui 组件
-import {Header, Swipe, SwipeItem} from 'mint-ui'
+import {Header, Swipe, SwipeItem, Button} from 'mint-ui'
 Vue.component(Header.name,Header)
 Vue.component(Swipe.name, Swipe);
 Vue.component(SwipeItem.name, SwipeItem);
+Vue.component(Button.name, Button);
 
 // 导入 mui 样式
 import './lib/mui/css/mui.min.css'
@@ -25,9 +26,16 @@ import router from './router.js'
 
 // 导入 axios
 import axios from 'axios'
-import VueAxios from 'vue-axios'
-Vue.use(VueAxios, axios)
+Vue.prototype.$axios = axios;
+axios.defaults.baseURL = 'http://www.liulongbin.top:3005';
 
+// 导入时间格式化插件
+import moment from 'moment'
+
+// 定义全局时间过滤器
+Vue.filter('dateFormat',function(dataStr,pattern='YYYY-MM-DD hh:mm:ss'){
+  return moment(dataStr).format(pattern);
+})
 
 var vm = new Vue({
   el:'#app',
