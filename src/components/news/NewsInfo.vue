@@ -1,7 +1,7 @@
 <template>
   <div class="newsinfo-container">
     <!-- 大标题 -->
-    <h3 class="title">{{ newsInfo.title }}</h3>
+    <h2 class="title">{{ newsInfo.title }}</h2>
     <!-- 副标题 -->
     <div class="subtitle">
       <span>发表时间：{{ newsInfo.add_time | dateFormat }}</span>
@@ -9,7 +9,7 @@
     </div>
     <hr>
     <!-- 内容区域 -->
-    <div class="content" v-html="newsInfo.content"></div>
+    <div class="contents" v-html="newsInfo.content"></div>
     <!-- 评论子组件区域 -->
     <comment-box :idMsg="id"></comment-box>
 
@@ -49,10 +49,10 @@ export default {
 }
 </script>
 
-<style lang="less" scoped>
+<style lang="less">
   .newsinfo-container {
     padding: 5px 5px 0 5px;
-    .title {
+    h2.title {
       text-align: center;
       color: #ff0000;
       font-size: 18px;
@@ -65,7 +65,7 @@ export default {
       color: #03a9f4;
       font-size: 14px;
     }
-    .content {
+    .contents {
       font-size: 14px;
       color: #999;
     }

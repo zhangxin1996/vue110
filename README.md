@@ -68,3 +68,136 @@
 5. 当发表评论成功后，刷新列表，查看最新的数据
   + 如果调用 getComment 方法，来刷新数据得到最新评论，可能得到的是最后一页的数据，前几页的数据获取不到
   + 可以使用这种方法，手动的拼接一个评论对象，通过数组方法 unshift，把最新的评论对象追加到 data 中的comments 的开头，这样就能实现刷新列表的需求。
+
+## 改造 图片分享 按钮，为路由的链接并显示对应的组件
+
+## 绘制 图片列表组件页面结构 并美化样式
+1. 制作 顶部的滑动条
+2. 制作 底部图片列表
+
+### 制作顶部滑动条的坑？？？
+1. 使用 MUI 中的 tab-top-webview-main.html
+2. 将 tab-top-webview-main.html 页面中的 .mui-fullscreen 类去掉，否则会全屏显示
+3. 滑动条无法正常触发滑动，通过查看官方文档，发现这是JS组件，需要被初始化
+  + 导入 mui.js
+  + 调用官方提供的方式初始化
+  ```
+    mui('.mui-scroll-wrapper').scroll({
+      deceleration: 0.0005 //flick 减速系数，系数越大，滚动速度越慢，滚动距离越小，默认值0.0006
+    });
+  ```
+  + 应该将官方提供的初始化代码，放到 mounted 钩子函数中，因为只有当页面DOM结构生成时，才能去调用元素执行相关操作；
+4. 报错`Uncaught TypeError: 'caller', 'callee', and 'arguments' properties may not be accessed on strict mode functions or the arguments objects for calls to them`，
+  + 原因是：引入第三方js使用了非严格模式，而 webpack 在打包的时候默认使用的是严格模式，这时候就需要更改 webpack 在打包的时候也使用非严格模式。
+  + 解决方法：
+    + `npm install babel-plugin-transform-remove-strict-mode --save-dev`
+    + 在bablerc文件中 添加：“plugins”:
+      ```
+      {
+        "plugins": ["transform-remove-strict-mode"]
+      }
+      ```
+  + [vue引入第三方js时，报严格模式错误的解决方法](http://www.architecy.com/archives/549)
+5. 报错 `[Intervention] Unable to preventDefault inside passive event listener due to target being treated as passive. See <URL>`
+  + 解决办法：
+    + 在 style 引入全局样式
+      ```
+      * {
+        touch-action: pan-y;
+      }
+      ```
+  + [滑动时候警告：Unable to preventDefault inside passive event listener](https://www.jianshu.com/p/04bf173826aa)
+6. 改类名(.mui-tab-item)，解决 tabbar 点击无法切换的问题
+7. 获取所有分类，并渲染 分类列表
+
+### 制作图片列表区域
+1. 图片列表使用懒加载技术，我们可以使用 Mint-UI 的组件 `Lazy load`
+2. 需全局导入  `Mint-UI` 才能显示懒加载的图标
+3. 通过 v-for 渲染图片列表数据
+
+### 实现了图片列表懒加载改造和样式的美化
+
+
+## 实现点击图片 跳转到 图片详情页面
+1. 改造 li 为 <router-link>，需要 tag 属性指定渲染为哪种标签
+
+## 实现图片详情页面的布局并美化和获取数据渲染到页面上
+
+## 实现图片详情 缩略图 功能
+1. 使用插件 `vue-preview`，实现图片缩略图功能
+2. 插件的使用步骤：
+  1. 使用命令 `npm i vue-preview -S`
+  2. main.js 入口引入
+  ```
+  import VuePreview from ‘vue-preview’
+  Vue.use(VuePreview)
+  ```
+  3. 组件中引入
+  ```
+  <div class="thumbs">
+    <vue-preview :slides="slide1" @close="handleClose"></vue-preview>
+  </div>
+  ```
+  4. 获取数据
+  ```
+  export default {
+    data(){
+      return {
+        id:this.$route.params.id,
+        slide1:[]   // 缩略图数据
+      }
+    },
+    created(){
+      this.getThumbnail()
+    },
+    methods:{
+      getThumbnail(){
+        this.$axios.get('api/getthumimages/'+this.id).then(result => {
+          if(result.data.status === 0){
+            result.data.message.forEach(element => {
+              element.w = 600;  // 设置以大图浏览时的宽度
+              element.h = 400;  // 设置以大图浏览时的高度
+              element.src = element.src;  //大图
+              element.msrc = element.src;  //小图
+            });
+            this.slide1 = result.data.message;
+          }else{
+            Toast('获取缩略图失败！');
+          }
+        })
+      }
+    }
+  }
+  ```
+  5. 设置缩略图CSS样式
+  ```
+  .thumbs {
+    /deep/ .my-gallery {
+      display: flex;
+      flex-wrap: wrap;
+      figure {
+        width: 30%;
+        margin: 5px;
+        img {
+          width: 100%;
+        }
+      }
+    }
+  }
+  ```
+
+## 实现商品购买的路由改造，及页面的实现
+
+## 尝试在手机上 进行项目的预览和测试
+1. 要保证自己的手机可以正常运行
+2. 要保证手机和开发项目的电脑在同一 WIFI 环境中，也就是说手机可以访问到电脑的 IP
+3. 打开自己的项目中 package.json 文件，在 dev 脚本中添加 --host 指令，把当前电脑的 WIFI 地址，设置为 --host 指令值
+  + 查看自己电脑所处的 WIFI 的 IP值，win+R cmd终端运行 `ipconfig` 查看无线网的 ip地址
+
+
+## Vuex是为了保存组件之间共享数据而诞生的，如果组件之间有共享的数据，可以直接挂载到Vuex上，而不必父组件之间传值了，如果组件的数据不需要共享，此时，这些不必要共享的私有数据，就没必要放到Vuex中了。
+
+  + 只有共享的数据，才有权利放到Vuex中
+  + 组件内部私有的数据，放到组件data中
+  + props和data和Vuex之间的区别
+### 得出结论：Vuex是一个全局共享数据的区域，相当于是一个数据的仓库。

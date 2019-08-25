@@ -1,11 +1,8 @@
 <template>
   <div>
     <!-- 轮播图 -->
-    <mt-swipe :auto="4000">
-      <mt-swipe-item v-for="item in lunbotuList" :key="item.id">
-        <img :src="item.img" alt="">
-      </mt-swipe-item>
-    </mt-swipe>
+    <!-- 3、标签形式引入 -->
+    <my-swipe :lunbotu='lunbotuList' :isFull="true"></my-swipe>
     
     <!-- 9宫格改造为6宫格 -->
     <ul class="mui-table-view mui-grid-view mui-grid-9">
@@ -16,16 +13,16 @@
         </router-link>
       </li>
       <li class="mui-table-view-cell mui-media mui-col-xs-4 mui-col-sm-3">
-        <a href="#">
+        <router-link to="/home/photolist">
           <img src="../../images/menu2.png" alt="">
           <div class="mui-media-body">图片分享</div>
-        </a>
+        </router-link>
       </li>
       <li class="mui-table-view-cell mui-media mui-col-xs-4 mui-col-sm-3">
-        <a href="#">
+        <router-link to="/home/goodslist">
           <img src="../../images/menu3.png" alt="">
           <div class="mui-media-body">商品购买</div>
-        </a>
+        </router-link>
       </li>
       <li class="mui-table-view-cell mui-media mui-col-xs-4 mui-col-sm-3">
         <a href="#">
@@ -52,6 +49,9 @@
 <script>
 import { Toast } from 'mint-ui';
 
+// 1、导入轮播图组件
+import swipe from '../subcomponents/Swipe.vue'
+
 export default {
   data() {
     return {
@@ -74,32 +74,14 @@ export default {
         }
       })
     }
+  },
+  components:{    // 2、注册组件
+    'my-swipe':swipe
   }
 }
 </script>
 
 <style lang="less" scoped>
-  .mint-swipe {
-    height:170px;
-
-    .mint-swipe-item {
-      &:nth-of-type(1) {
-        background-color:red;
-      }
-      &:nth-of-type(2) {
-        background-color:blue;
-      }
-      &:nth-of-type(3) {
-        background-color:orange;
-      }
-
-      img {
-        width: 100%;
-        height: 100%;
-      }
-    }
-  }
-
   .mui-grid-view.mui-grid-9 {
     background-color: #fff;
 

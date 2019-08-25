@@ -8,11 +8,16 @@ import VueRouter from 'vue-router'
 Vue.use(VueRouter)
 
 // 按需导入 mint-ui 组件
-import {Header, Swipe, SwipeItem, Button} from 'mint-ui'
-Vue.component(Header.name,Header)
-Vue.component(Swipe.name, Swipe);
-Vue.component(SwipeItem.name, SwipeItem);
-Vue.component(Button.name, Button);
+// import {Header, Swipe, SwipeItem, Button} from 'mint-ui'
+// Vue.component(Header.name,Header)
+// Vue.component(Swipe.name, Swipe);
+// Vue.component(SwipeItem.name, SwipeItem);
+// Vue.component(Button.name, Button);
+
+// 全局导入 mint-ui 组件
+import MintUI from 'mint-ui'
+import 'mint-ui/lib/style.css'
+Vue.use(MintUI)
 
 // 导入 mui 样式
 import './lib/mui/css/mui.min.css'
@@ -33,9 +38,13 @@ axios.defaults.baseURL = 'http://www.liulongbin.top:3005';
 import moment from 'moment'
 
 // 定义全局时间过滤器
-Vue.filter('dateFormat',function(dataStr,pattern='YYYY-MM-DD hh:mm:ss'){
+Vue.filter('dateFormat',function(dataStr,pattern='YYYY-MM-DD HH:mm:ss'){
   return moment(dataStr).format(pattern);
 })
+
+// vue图片预览插件+缩略图样式 vue-preview
+import VuePreview from 'vue-preview'
+Vue.use(VuePreview)
 
 var vm = new Vue({
   el:'#app',

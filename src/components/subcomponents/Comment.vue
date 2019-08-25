@@ -2,8 +2,8 @@
   <div class="comment-container">
     <h3 class="title">发表评论</h3>
     <hr>
-    <textarea placeholder="请输入要评论的内容(最多评论120字)" maxlength="120"></textarea>
-    <mt-button class="btn" type="primary" size="large">发表评论</mt-button>
+    <textarea placeholder="请输入要评论的内容(最多评论120字)" maxlength="120" v-model="commentText"></textarea>
+    <mt-button class="btn" type="primary" size="large" @click="postComment">发表评论</mt-button>
     <div class="content" v-for="(item,index) in comments" :key="item.add_time">
       <div class="content_head">
         第{{index+1}}楼 &nbsp;&nbsp; 用户：{{item.user_name}} &nbsp;&nbsp; 发表时间：{{item.add_time | dateFormat}}
@@ -22,8 +22,9 @@ import {Toast} from 'mint-ui'
 export default {
   data(){
     return {
-      pageindex:1,   //  分页的页码，表示当前第几页,默认展示第一页数据
-      comments:[]   //   // 所有的评论数据
+      pageindex:1,      //  分页的页码，表示当前第几页,默认展示第一页数据
+      comments:[],      //  所有的评论数据
+      commentText:''    //  textarea 数据
     }
   },
   props:['idMsg'],
@@ -42,9 +43,27 @@ export default {
         }
       })
     },
+    // 加载更多按钮
     getMore(){
       this.pageindex++;
       this.getComment()
+    },
+    // 发表评论按钮
+    postComment(){
+      if(this.commentText.trim().length === 0) {
+        return Toast("评论内容不能为空！");
+      }
+
+      this.$axios.post('api/postcomment/'+this.idMsg,{content:this.commentText}).then(result => {
+        if(result.data.status === 0) {
+          var newMsg = {user_name:'匿名用户',add_time:Date.now(),content:this.commentText};
+          this.comments.unshift(newMsg);
+
+          this.commentText = '';
+        }else {
+          Toast('提交评论信息失败！');
+        }
+      })
     }
   },
 }
@@ -74,7 +93,7 @@ export default {
         line-height: 30px;
       }
       .content_body {
-        height: 36px;
+        padding: 0 4px;
         line-height: 36px;
         text-indent: 2em;
         background-color: #fff;
