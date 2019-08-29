@@ -28,7 +28,7 @@
           <div style="margin-bottom:10px;">
             <span>购买数量：</span>
             <!-- 数字输入框 -->
-            <my-numberBox class="numberBox" :max="goodsInfo.stock_quantity" @getCount="getSelectedCount"></my-numberBox>
+            <my-numBox class="numberBox" :max="goodsInfo.stock_quantity" @getCount="getSelectedCount"></my-numBox>
           </div>
           <div>
             <mt-button type="primary" size="small">立即购买</mt-button>
@@ -61,7 +61,7 @@ import {Toast} from 'mint-ui'
 // 轮播图组件
 import swipe from '../subcomponents/Swipe.vue'
 // 数字输入框组件
-import numberBox from '../subcomponents/goodsinfo_numbox.vue'
+import numBox from '../subcomponents/goodsinfo_numbox.vue'
 
 export default {
   data(){
@@ -111,6 +111,17 @@ export default {
     addToShopCar(){
       // 控制小球的显示隐藏
       this.ballFlag = !this.ballFlag;
+
+      // 拼接出一个，要保存在 store 中 car 数组里的商品对象
+      // {id:商品的id,count:商品的数量,price:商品的价格,selected:false}
+      var info = {
+        id:this.id,
+        count:this.selectedCount,
+        price:this.goodsInfo.sell_price,
+        selected:true
+      };
+      // 调用 store 中的 mutations
+      this.$store.commit('addToCar',info);
     },
     beforeEnter(el){
       el.style.transform="translate(0,0)";
@@ -159,7 +170,7 @@ export default {
   },
   components:{
     'my-swipe':swipe,
-    'my-numberBox':numberBox
+    'my-numBox':numBox
   }
 }
 </script>

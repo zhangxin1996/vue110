@@ -1,7 +1,11 @@
 <template>
   <div class="app-container">
     <!-- Header 区域 -->
-    <mt-header fixed title="Vue项目"></mt-header>
+    <mt-header fixed title="Vue项目实战">
+			<span slot="left" v-show="flag" @click="goBack">
+				<mt-button icon="back">返回</mt-button>
+			</span>
+		</mt-header>
 
     <!-- router-view 来展示路由匹配到的组件 -->
 		<transition>
@@ -20,7 +24,7 @@
 			</router-link>
 			<router-link class="mui-tab-item-lib" to="/shopcar">
 				<span class="mui-icon mui-icon-extra mui-icon-extra-cart">
-					<span id="badge" class="mui-badge">0</span>
+					<span id="badge" class="mui-badge">{{ $store.getters.getAllCount }}</span>
 				</span>
 				<span class="mui-tab-label">购物车</span>
 			</router-link>
@@ -34,7 +38,27 @@
 </template>
 
 <script>
-
+	export default {
+		data(){
+			return {
+				flag:false
+			}
+		},
+		methods:{
+			goBack(){
+				this.$router.go(-1);
+			}
+		},
+		watch:{
+			'$route.path':function(newVal,oldVal){
+				if(newVal === '/home'){
+					this.flag = false;
+				}else{
+					this.flag = true;
+				}
+			}
+		}
+	}
 </script>
 
 <style lang="less" scoped>
